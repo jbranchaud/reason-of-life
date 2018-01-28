@@ -22,6 +22,22 @@ let generateBoard = (size: int): list(list(int)) => {
   Array.to_list(board);
 };
 
+let generateRandomBoard = (size: int): list(list(int)) => {
+  let board = Array.make(size, []);
+
+  for (rowIndex in 0 to size-1) {
+    let currRow = Array.make(size, 0);
+    for (cellIndex in 0 to size-1) {
+      if (Random.int(3) == 0) {
+        currRow[cellIndex] = 1;
+      };
+    };
+    board[rowIndex] = Array.to_list(currRow);
+  };
+
+  Array.to_list(board);
+};
+
 let life = ReasonReact.reducerComponent("Life");
 
 let make = (_children) => {
@@ -55,7 +71,7 @@ let make = (_children) => {
   initialState: () => {
       running: true,
       timerId: ref(None),
-      board: generateBoard(20)
+      board: generateRandomBoard(20)
   },
   reducer: (action, state) =>
     switch (action) {
