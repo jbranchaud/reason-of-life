@@ -23,6 +23,15 @@
   to { transform: rotate(360deg); }
 }
 
+div.board {
+  display: flex;
+  flex-direction: column;
+}
+
+div.row {
+  display: flex;
+}
+
 span.cell {
   display: inline-block;
   height: 10px;

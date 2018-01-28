@@ -6,7 +6,7 @@ type action =
 type state = {
   running: bool,
   timerId: ref(option(Js.Global.intervalId)),
-  board: list(int)
+  board: list(list(int))
 };
 
 let cell = (value: int) => {
@@ -15,6 +15,11 @@ let cell = (value: int) => {
   } else {
     <span className="cell dead" />
   };
+};
+
+let generateBoard = (size: int): list(list(int)) => {
+  let board = Array.make(size, Array.to_list(Array.make(size, 0)));
+  Array.to_list(board);
 };
 
 let life = ReasonReact.reducerComponent("Life");
@@ -50,19 +55,21 @@ let make = (_children) => {
   initialState: () => {
       running: true,
       timerId: ref(None),
-      board: [1,0,0,0,1]
+      board: generateBoard(20)
   },
   reducer: (action, state) =>
     switch (action) {
     | StartTimer => ReasonReact.Update({...state, running: true })
     | StopTimer => ReasonReact.Update({...state, running: false })
     | Tick => {
-      let newBoard = List.map((item) => {
-        if (item == 0) {
-          1
-        } else {
-          0
-        };
+      let newBoard = List.map((row) => {
+        List.map((cell) => {
+          if (cell == 0) {
+            1
+          } else {
+            0
+          };
+        }, row)
       }, state.board);
       ReasonReact.Update({...state, board: newBoard})
       }
@@ -70,11 +77,18 @@ let make = (_children) => {
   render: ({state, send}) => {
     <div>
       <hr />
+      <div className="board">
       (ReasonReact.arrayToElement(Array.of_list(
-                  List.map((item) =>
-                           cell(item),
-                           state.board)
+                  List.map((row) => {
+                    <span className="row">
+                    (ReasonReact.arrayToElement(Array.of_list((List.map((cellValue) => {
+                      cell(cellValue)
+                    }, row)))))
+                    </span>
+                  },
+                  state.board)
       )))
+      </div>
       <button onClick={_event => send(StartTimer)}>{
         ReasonReact.stringToElement("Start") }</button>
       <button onClick={_event => send(StopTimer)}>{
