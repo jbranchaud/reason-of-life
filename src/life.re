@@ -38,6 +38,61 @@ let generateRandomBoard = (size: int): list(list(int)) => {
   Array.to_list(board);
 };
 
+let neighborValue = (board: list(list(int)), rowIndex: int, cellIndex: int):
+  int => {
+    switch (List.nth(List.nth(board, rowIndex), cellIndex)) {
+    | value => value
+    | exception Invalid_argument("List.nth") => 0
+    | exception Failure("nth") => 0
+    };
+  };
+
+let tickBoard = (currBoard: list(list(int))): list(list(int)) => {
+  let size = List.length(currBoard);
+  let board = Array.make(size, []);
+
+  for (rowIndex in 0 to size-1) {
+    let currRow = Array.make(size, 0);
+    for (cellIndex in 0 to size-1) {
+
+      /* Any live cell with fewer than two live neighbours dies, as if caused by underpopulation. */
+      /* Any live cell with two or three live neighbours lives on to the next generation. */
+      /* Any live cell with more than three live neighbours dies, as if by overpopulation. */
+      /* Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction. */
+      let liveNeighborCount = {
+        /* 0 1 2 */
+        /* 3 _ 4 */
+        /* 5 6 7 */
+        let n0 = neighborValue(currBoard, rowIndex-1, cellIndex-1);
+        let n1 = neighborValue(currBoard, rowIndex-1, cellIndex);
+        let n2 = neighborValue(currBoard, rowIndex-1, cellIndex+1);
+        let n3 = neighborValue(currBoard, rowIndex, cellIndex-1);
+        let n4 = neighborValue(currBoard, rowIndex, cellIndex+1);
+        let n5 = neighborValue(currBoard, rowIndex+1, cellIndex-1);
+        let n6 = neighborValue(currBoard, rowIndex+1, cellIndex);
+        let n7 = neighborValue(currBoard, rowIndex+1, cellIndex+1);
+        n0 + n1 + n2 + n3 + n4 + n5 + n6 + n7
+      };
+
+      let currStatus = List.nth(List.nth(currBoard, rowIndex), cellIndex);
+      let status =
+        switch (currStatus, liveNeighborCount) {
+        | (1, 0) => 0
+        | (1, 1) => 0
+        | (1, 2) => 1
+        | (1, 3) => 1
+        | (1, _) => 0
+        | (0, 3) => 1
+        | _ => currStatus
+        };
+      currRow[cellIndex] = status;
+    };
+    board[rowIndex] = Array.to_list(currRow);
+  };
+
+  Array.to_list(board);
+};
+
 let life = ReasonReact.reducerComponent("Life");
 
 let make = (_children) => {
@@ -78,15 +133,7 @@ let make = (_children) => {
     | StartTimer => ReasonReact.Update({...state, running: true })
     | StopTimer => ReasonReact.Update({...state, running: false })
     | Tick => {
-      let newBoard = List.map((row) => {
-        List.map((cell) => {
-          if (cell == 0) {
-            1
-          } else {
-            0
-          };
-        }, row)
-      }, state.board);
+      let newBoard = tickBoard(state.board);
       ReasonReact.Update({...state, board: newBoard})
       }
     },
