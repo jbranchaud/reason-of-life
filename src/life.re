@@ -139,7 +139,6 @@ let make = (_children) => {
     },
   render: ({state, send}) => {
     <div>
-      <hr />
       <div className="board">
       (ReasonReact.arrayToElement(Array.of_list(
                   List.map((row) => {

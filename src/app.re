@@ -4,19 +4,6 @@
 
 let component = ReasonReact.statelessComponent("App");
 
-type name = { firstName: string, lastName: string };
-
-let myName: name = { firstName: "Josh", lastName: "Branchaud" };
-
-let formatName = (name) =>
-  name.firstName ++ " " ++ name.lastName;
-
-let nameComponent = (aName: name) => {
-  <p>
-    (ReasonReact.stringToElement("My name is " ++ formatName(aName)))
-  </p>
-};
-
 let make = (~message, _children) => {
   ...component,
   render: (_self) =>
@@ -30,8 +17,6 @@ let make = (~message, _children) => {
         <code> (ReasonReact.stringToElement(" src/app.re ")) </code>
         (ReasonReact.stringToElement("and save to reload."))
       </p>
-      (nameComponent(myName))
-      <Counter />
       <Life />
     </div>
 };
