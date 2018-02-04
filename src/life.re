@@ -17,8 +17,7 @@ type state = {
 let cell = (cd: cellData) => {
   if (cd.value == 1) {
     <span className="cell alive"
-      style=(
-          ReactDOMRe.Style.make(~backgroundColor=cd.color, ())) />
+      style=(ReactDOMRe.Style.make(~backgroundColor=cd.color, ())) />
   } else {
     <span className="cell dead" />
   };
