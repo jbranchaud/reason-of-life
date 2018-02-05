@@ -19,7 +19,8 @@ let cell = (cd: cellData) => {
     <span className="cell alive"
       style=(ReactDOMRe.Style.make(~backgroundColor=cd.color, ())) />
   } else {
-    <span className="cell dead" />
+    <span className="cell dead"
+      style=(ReactDOMRe.Style.make(~backgroundColor=cd.color, ())) />
   };
 };
 
@@ -81,6 +82,11 @@ let tickBoard = (currBoard: list(list(cellData))): list(list(cellData)) => {
         n0 + n1 + n2 + n3 + n4 + n5 + n6 + n7
       };
 
+      /* 256 / size * rowIndex (or cellIndex) placed into RGBA */
+      let red = (256 / size) * (rowIndex + 1);
+      let green = (256 / size) * (cellIndex + 1);
+      let blue = (256 / (size * 2)) * (cellIndex + rowIndex + 2);
+
       let currCellData = List.nth(List.nth(currBoard, rowIndex), cellIndex);
       let status =
         switch (currCellData.value, liveNeighborCount) {
@@ -92,7 +98,13 @@ let tickBoard = (currBoard: list(list(cellData))): list(list(cellData)) => {
         | (0, 3) => 1
         | _ => currCellData.value
         };
-      currRow[cellIndex] = {value: status, color: "#000000"}
+      let alpha =
+        switch (status) {
+        | 1 => 1.0
+        | _ => 0.3
+        };
+      let newColor = Printf.sprintf("rgba(%i, %i, %i, %f)", red, green, blue, alpha);
+      currRow[cellIndex] = {value: status, color: newColor}
     };
     board[rowIndex] = Array.to_list(currRow);
   };
