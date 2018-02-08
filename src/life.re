@@ -11,10 +11,10 @@ type action =
 type state = {
   running: bool,
   timerId: ref(option(Js.Global.intervalId)),
-  board: list(list(cellData))
+  board: list(list(Cell.data))
 };
 
-let cell = (cd: cellData) => {
+let cell = (cd: Cell.data) => {
   if (cd.value == 1) {
     <span className="cell alive"
       style=(ReactDOMRe.Style.make(~backgroundColor=cd.color, ())) />
@@ -24,20 +24,19 @@ let cell = (cd: cellData) => {
   };
 };
 
-let generateBoard = (size: int): list(list(cellData)) => {
-  let board = Array.make(size, Array.to_list(Array.make(size, {value: 0,
-    color: "#000000"})));
+let generateBoard = (size: int): list(list(Cell.data)) => {
+  let board = Array.make(size, Array.to_list(Array.make(size, Cell.make(()))));
   Array.to_list(board);
 };
 
-let generateRandomBoard = (size: int): list(list(cellData)) => {
+let generateRandomBoard = (size: int): list(list(Cell.data)) => {
   let board = Array.make(size, []);
 
   for (rowIndex in 0 to size-1) {
-    let currRow = Array.make(size, {value: 0, color: "#000000"});
+    let currRow = Array.make(size, Cell.make(()));
     for (cellIndex in 0 to size-1) {
       if (Random.int(3) == 0) {
-        currRow[cellIndex] = {value: 1, color: "#000000"};
+        currRow[cellIndex] = Cell.make(~value=1, ());
       };
     };
     board[rowIndex] = Array.to_list(currRow);
@@ -46,7 +45,7 @@ let generateRandomBoard = (size: int): list(list(cellData)) => {
   Array.to_list(board);
 };
 
-let neighborValue = (board: list(list(cellData)), rowIndex: int, cellIndex: int):
+let neighborValue = (board: list(list(Cell.data)), rowIndex: int, cellIndex: int):
   int => {
     switch (List.nth(List.nth(board, rowIndex), cellIndex)) {
     | cellData => cellData.value
@@ -55,12 +54,12 @@ let neighborValue = (board: list(list(cellData)), rowIndex: int, cellIndex: int)
     };
   };
 
-let tickBoard = (currBoard: list(list(cellData))): list(list(cellData)) => {
+let tickBoard = (currBoard: list(list(Cell.data))): list(list(Cell.data)) => {
   let size = List.length(currBoard);
   let board = Array.make(size, []);
 
   for (rowIndex in 0 to size-1) {
-    let currRow = Array.make(size, {value: 0, color: "#000000"});
+    let currRow = Array.make(size, Cell.make(()));
     for (cellIndex in 0 to size-1) {
 
       /* Any live cell with fewer than two live neighbours dies, as if caused by underpopulation. */
@@ -104,7 +103,7 @@ let tickBoard = (currBoard: list(list(cellData))): list(list(cellData)) => {
         | _ => 0.3
         };
       let newColor = Printf.sprintf("rgba(%i, %i, %i, %f)", red, green, blue, alpha);
-      currRow[cellIndex] = {value: status, color: newColor}
+      currRow[cellIndex] = Cell.make(~value=status, ~color=newColor, ())
     };
     board[rowIndex] = Array.to_list(currRow);
   };
