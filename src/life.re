@@ -25,6 +25,7 @@ let generateBoard = (size: int): list(list(Cell.data)) => {
 };
 
 let generateRandomBoard = (size: int): list(list(Cell.data)) => {
+  Random.init(int_of_float(Js.Date.now()));
   let board = Array.make(size, []);
 
   for (rowIndex in 0 to size-1) {
