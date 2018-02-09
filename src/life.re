@@ -7,7 +7,8 @@ type action =
 type state = {
   running: bool,
   timerId: ref(option(Js.Global.intervalId)),
-  board: list(list(Cell.data))
+  board: list(list(Cell.data)),
+  size: int
 };
 
 let cell = (cd: Cell.data) => {
@@ -141,7 +142,8 @@ let make = (_children) => {
   initialState: () => {
       running: true,
       timerId: ref(None),
-      board: generateRandomBoard(20)
+      board: generateRandomBoard(20),
+      size: 20
   },
   reducer: (action, state) =>
     switch (action) {
@@ -152,7 +154,7 @@ let make = (_children) => {
       ReasonReact.Update({...state, board: newBoard})
       }
     | ResetBoard => {
-      let newBoard = generateRandomBoard(20);
+      let newBoard = generateRandomBoard(state.size);
       ReasonReact.Update({...state, board: newBoard})
       }
     },
