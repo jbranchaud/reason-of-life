@@ -1,7 +1,8 @@
 type action =
   | StartTimer
   | StopTimer
-  | Tick;
+  | Tick
+  | ResetBoard;
 
 type state = {
   running: bool,
@@ -150,6 +151,10 @@ let make = (_children) => {
       let newBoard = tickBoard(state.board);
       ReasonReact.Update({...state, board: newBoard})
       }
+    | ResetBoard => {
+      let newBoard = generateRandomBoard(20);
+      ReasonReact.Update({...state, board: newBoard})
+      }
     },
   render: ({state, send}) => {
     <div>
@@ -169,6 +174,8 @@ let make = (_children) => {
         ReasonReact.stringToElement("Start") }</button>
       <button onClick={_event => send(StopTimer)}>{
         ReasonReact.stringToElement("Stop") }</button>
+      <button onClick={_event => send(ResetBoard)}>{
+        ReasonReact.stringToElement("Reset") }</button>
     </div>
   }
 };
