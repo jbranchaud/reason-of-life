@@ -1,8 +1,3 @@
-type cellData = {
-  value: int,
-  color: string
-};
-
 type action =
   | StartTimer
   | StopTimer
