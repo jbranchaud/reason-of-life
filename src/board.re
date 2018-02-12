@@ -68,7 +68,7 @@ let tick = (currBoard: list(list(Cell.data))): list(list(Cell.data)) => {
       /* 256 / size * rowIndex (or cellIndex) placed into RGBA */
       let red = (256 / size) * (rowIndex + 1);
       let green = (256 / size) * (cellIndex + 1);
-      let blue = (256 / (size * 2)) * (cellIndex + rowIndex + 2);
+      let blue = 128;
 
       let currCellData = List.nth(List.nth(currBoard, rowIndex), cellIndex);
       let status =

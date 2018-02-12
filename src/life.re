@@ -54,8 +54,8 @@ let make = (_children) => {
   initialState: () => {
       running: true,
       timerId: ref(None),
-      board: Board.generate(20, Random),
-      size: 20
+      board: Board.generate(30, Random),
+      size: 30
   },
   reducer: (action, state) =>
     switch (action) {
