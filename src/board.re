@@ -29,6 +29,19 @@ let generate = (size: int, genType: generationType): list(list(CellData.data)) =
   };
 };
 
+let toggleCell = (currBoard: list(list(CellData.data)), x: int, y: int):
+  list(list(CellData.data)) => {
+    List.mapi((rowIndex, row) => {
+      List.mapi((cellIndex, cell: CellData.data) => {
+        switch ((cell.value, rowIndex == x && cellIndex == y)) {
+        | (1, true) => CellData.make(~value=0, ())
+        | (0, true) => CellData.make(~value=1, ())
+        | _ => cell
+        }
+      }, row);
+    }, currBoard);
+  };
+
 let neighborValue = (board: list(list(CellData.data)), rowIndex: int, cellIndex: int):
   int => {
     switch (List.nth(List.nth(board, rowIndex), cellIndex)) {

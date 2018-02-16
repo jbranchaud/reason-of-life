@@ -2,7 +2,8 @@ type action =
   | StartTimer
   | StopTimer
   | Tick
-  | ResetBoard;
+  | ResetBoard
+  | ToggleCell(int, int);
 
 type state = {
   running: bool,
@@ -59,15 +60,20 @@ let make = (_children) => {
       let newBoard = Board.generate(state.size, Random);
       ReasonReact.Update({...state, board: newBoard})
       }
+    | ToggleCell(x, y) => {
+      let newBoard = Board.toggleCell(state.board, x, y);
+      ReasonReact.Update({...state, board: newBoard})
+      }
     },
   render: ({state, send}) => {
     <div>
       <div className="board">
       (ReasonReact.arrayToElement(Array.of_list(
-                  List.map((row) => {
+                  List.mapi((x, row) => {
                     <span className="row">
-                    (ReasonReact.arrayToElement(Array.of_list((List.map((cellData) => {
-                      <Cell cellData={cellData} />
+                    (ReasonReact.arrayToElement(Array.of_list((List.mapi((y, cellData) => {
+                      <Cell cellData={cellData} onClick={(_) =>
+                        send(ToggleCell(x, y))} />
                     }, row)))))
                     </span>
                   },
