@@ -7,18 +7,8 @@ type action =
 type state = {
   running: bool,
   timerId: ref(option(Js.Global.intervalId)),
-  board: list(list(Cell.data)),
+  board: list(list(CellData.data)),
   size: int
-};
-
-let cell = (cd: Cell.data) => {
-  if (cd.value == 1) {
-    <span className="cell alive"
-      style=(ReactDOMRe.Style.make(~backgroundColor=cd.color, ())) />
-  } else {
-    <span className="cell dead"
-      style=(ReactDOMRe.Style.make(~backgroundColor=cd.color, ())) />
-  };
 };
 
 let life = ReasonReact.reducerComponent("Life");
@@ -77,7 +67,7 @@ let make = (_children) => {
                   List.map((row) => {
                     <span className="row">
                     (ReasonReact.arrayToElement(Array.of_list((List.map((cellData) => {
-                      cell(cellData)
+                      <Cell cellData={cellData} />
                     }, row)))))
                     </span>
                   },

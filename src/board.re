@@ -1,19 +1,19 @@
 type generationType = Empty | Random;
 
-let generateBoard = (size: int): list(list(Cell.data)) => {
-  let board = Array.make(size, Array.to_list(Array.make(size, Cell.make(()))));
+let generateBoard = (size: int): list(list(CellData.data)) => {
+  let board = Array.make(size, Array.to_list(Array.make(size, CellData.make(()))));
   Array.to_list(board);
 };
 
-let generateRandomBoard = (size: int): list(list(Cell.data)) => {
+let generateRandomBoard = (size: int): list(list(CellData.data)) => {
   Random.init(int_of_float(Js.Date.now()));
   let board = Array.make(size, []);
 
   for (rowIndex in 0 to size-1) {
-    let currRow = Array.make(size, Cell.make(()));
+    let currRow = Array.make(size, CellData.make(()));
     for (cellIndex in 0 to size-1) {
       if (Random.int(3) == 0) {
-        currRow[cellIndex] = Cell.make(~value=1, ());
+        currRow[cellIndex] = CellData.make(~value=1, ());
       };
     };
     board[rowIndex] = Array.to_list(currRow);
@@ -22,14 +22,14 @@ let generateRandomBoard = (size: int): list(list(Cell.data)) => {
   Array.to_list(board);
 };
 
-let generate = (size: int, genType: generationType): list(list(Cell.data)) => {
+let generate = (size: int, genType: generationType): list(list(CellData.data)) => {
   switch (genType) {
   | Empty => generateBoard(size)
   | Random => generateRandomBoard(size)
   };
 };
 
-let neighborValue = (board: list(list(Cell.data)), rowIndex: int, cellIndex: int):
+let neighborValue = (board: list(list(CellData.data)), rowIndex: int, cellIndex: int):
   int => {
     switch (List.nth(List.nth(board, rowIndex), cellIndex)) {
     | cellData => cellData.value
@@ -38,12 +38,12 @@ let neighborValue = (board: list(list(Cell.data)), rowIndex: int, cellIndex: int
     };
   };
 
-let tick = (currBoard: list(list(Cell.data))): list(list(Cell.data)) => {
+let tick = (currBoard: list(list(CellData.data))): list(list(CellData.data)) => {
   let size = List.length(currBoard);
   let board = Array.make(size, []);
 
   for (rowIndex in 0 to size-1) {
-    let currRow = Array.make(size, Cell.make(()));
+    let currRow = Array.make(size, CellData.make(()));
     for (cellIndex in 0 to size-1) {
 
       /* Any live cell with fewer than two live neighbours dies, as if caused by underpopulation. */
@@ -87,7 +87,7 @@ let tick = (currBoard: list(list(Cell.data))): list(list(Cell.data)) => {
         | _ => 0.3
         };
       let newColor = Printf.sprintf("rgba(%i, %i, %i, %f)", red, green, blue, alpha);
-      currRow[cellIndex] = Cell.make(~value=status, ~color=newColor, ())
+      currRow[cellIndex] = CellData.make(~value=status, ~color=newColor, ())
     };
     board[rowIndex] = Array.to_list(currRow);
   };

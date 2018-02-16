@@ -1,8 +1,13 @@
-type data = {
-  value: int,
-  color: string,
-};
+let component = ReasonReact.statelessComponent("Cell");
 
-let make = (~value as v: int=0, ~color as c: string="#000000", ()) => {
-  {value: v, color: c};
+let make = (~cellData: CellData.data, _children) => {
+  ...component,
+  render: (_self) =>
+    if (cellData.value == 1) {
+      <span className="cell alive"
+        style=(ReactDOMRe.Style.make(~backgroundColor=cellData.color, ())) />
+    } else {
+      <span className="cell dead"
+        style=(ReactDOMRe.Style.make(~backgroundColor=cellData.color, ())) />
+    }
 };
