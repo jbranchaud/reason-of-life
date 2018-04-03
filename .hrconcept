@@ -1,0 +1,5 @@
+name: reason-of-life
+url: http://rol.joshbranchaud.com/
+banner: true
+description: |
+  An implementation of Conway's Game of Life written with ReasonML and React.
